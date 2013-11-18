@@ -1,9 +1,9 @@
 
-function Timer(name, opts, chrono) {
+function Timer(name, opts, listener) {
   this.timerId = null;
   this.name = name;
   this.opts = opts || { interval: 1000 };
-  this.chrono = chrono;
+  this.listener = listener;
   this.current = this.started = Date.now();
 }
 
@@ -12,7 +12,7 @@ Timer.prototype.start = function timerStart() {
   var drift = (Date.now() - this.started) % 1000;
 
   this.timerId = setTimeout(function() {
-    self.chrono.onTick(self.name, self);
+    self.listener(self.name, self);
     self.start();
   }, this.opts.interval - drift);
 
@@ -34,7 +34,7 @@ function ChronoService() {
 }
 
 ChronoService.prototype.addTimer = function addTimer(name, opts) {
-  this.timers[name] = new Timer(name, opts, this);
+  this.timers[name] = new Timer(name, opts, this.onTick);
   return this;
 };
 
