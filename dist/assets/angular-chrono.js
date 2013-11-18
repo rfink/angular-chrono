@@ -12,6 +12,8 @@ function chronoTimerDirective($log, chronoService) {
 
     if (!$attrs.startTime) {
       $attrs.startTime = Date.now();
+    } else {
+      $attrs.startTime = (new Date($attrs.startTime)).getTime();
     }
 
     if (!timerName) {

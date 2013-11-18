@@ -5,6 +5,8 @@
       var timerName = $attrs.timerName;
       if (!$attrs.startTime) {
         $attrs.startTime = Date.now();
+      } else {
+        $attrs.startTime = new Date($attrs.startTime).getTime();
       }
       if (!timerName) {
         $log.error('timer-name must be specified');
