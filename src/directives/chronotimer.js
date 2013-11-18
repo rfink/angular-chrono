@@ -19,7 +19,7 @@ function chronoTimerDirective($log, chronoService) {
       $scope.totalDays = Math.floor((milliseconds / 360000) / 24);
     }
 
-    chronoService.subscribe(timerName, function(err, timer) {
+    function render(err, timer) {
       if (err) {
         return console.error(err);
       }
@@ -40,7 +40,14 @@ function chronoTimerDirective($log, chronoService) {
       $scope.milliseconds = timer.current - startTime;
       setTimes($scope.milliseconds);
       $scope.$digest();
+    }
+
+    $element.bind('$destroy', function() {
+      chronoService.unsubscribe(timerName, render);
     });
+
+    chronoService.subscribe(timerName, render);
+
   }
 
   var ctrlParams = [
