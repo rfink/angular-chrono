@@ -7,7 +7,7 @@
   <body ng-app="chronoTest" ng-controller="TestController">
     <div ng-repeat="i in range(50)">
       <div chrono-timer timer-name="default" start-time="{{ time }}">
-        {{ days }} days
+        {{ totalDays }} days
         {{ hours|zeropad }}:{{ minutes|zeropad }}:{{ seconds|zeropad }}
       </div>
     </div>
