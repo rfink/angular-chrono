@@ -4,12 +4,6 @@ function chronoTimerDirective($log, chronoService) {
   function chronoController($scope, $element, $attrs) {
     var timerName = $attrs.timerName;
 
-    if (!$attrs.startTime) {
-      $attrs.startTime = Date.now();
-    } else {
-      $attrs.startTime = (new Date($attrs.startTime)).getTime();
-    }
-
     if (!timerName) {
       $log.error('timer-name must be specified');
       return;
@@ -30,7 +24,20 @@ function chronoTimerDirective($log, chronoService) {
         return console.error(err);
       }
 
-      $scope.milliseconds = timer.current - (+$attrs.startTime);
+      var startTime = null;
+
+      if (!$attrs.startTime) {
+        startTime = Date.now();
+      } else {
+        startTime = (new Date($attrs.startTime)).getTime();
+      }
+
+      if (isNaN(startTime)) {
+        $log.error('Invalid start time specified');
+        return;
+      }
+
+      $scope.milliseconds = timer.current - startTime;
       setTimes($scope.milliseconds);
       $scope.$digest();
     });
