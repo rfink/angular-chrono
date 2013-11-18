@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Angular Chrono - Example Page</title>
+  </head>
+  <body ng-app="chronoTest" ng-controller="TestController">
+    <div ng-repeat="i in range(50)">
+      <div chrono-timer timer-name="default" start-time="{{ time }}">
+        {{ seconds }}
+      </div>
+    </div>
+    <br />
+    <button ng-click="start()">Start</button>
+    <button ng-click="stop()">Stop</button>
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/moment/moment.js"></script>
+    <script src="../dist/assets/angular-chrono.js"></script>
+    <script>
+      (function(window, angular, undefined) {
+
+        function TestController($scope, chronoService) {
+          chronoService.addTimer('default');
+          $scope.range = function(num) {
+            return new Array(num);
+          };
+          $scope.start = function() {
+            chronoService.start();
+          };
+          $scope.stop = function() {
+            chronoService.stop();
+          };
+          $scope.time = Date.now();
+        }
+
+        angular.module('chronoTest', ['angular-chrono'])
+               .controller('TestController', TestController);
+
+      }(window, angular));
+    </script>
+  </body>
+</html>

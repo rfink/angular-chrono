@@ -1,0 +1,26 @@
+{
+  "esnext": true,
+  "node": true,
+  "laxcomma": true,
+  "laxbreak": true,
+  "camelcase": true,
+  "indent": 2,
+  "newcap": true,
+  "quotmark": "single",
+  "unused": "vars",
+  "trailing": true,
+  "proto": true,
+  "maxcomplexity": 6,
+  "multistr": true,
+  "maxparams": 6,
+  "maxlen": 80,
+  "maxstatements": 25,
+  "eqnull": true,
+  "immed": true,
+  "latedef": true,
+  "nonew": true,
+  "white": true,
+  "globals": {
+    "angular": true
+  }
+}
