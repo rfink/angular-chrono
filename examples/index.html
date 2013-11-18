@@ -7,7 +7,8 @@
   <body ng-app="chronoTest" ng-controller="TestController">
     <div ng-repeat="i in range(50)">
       <div chrono-timer timer-name="default" start-time="{{ time }}">
-        {{ seconds }}
+        {{ days }} days
+        {{ hours|zeropad }}:{{ minutes|zeropad }}:{{ seconds|zeropad }}
       </div>
     </div>
     <br />
@@ -30,7 +31,7 @@
           $scope.stop = function() {
             chronoService.stop();
           };
-          $scope.time = Date.now();
+          $scope.time = Date.now() - 353833 * 24 * 7;
         }
 
         angular.module('chronoTest', ['angular-chrono'])
