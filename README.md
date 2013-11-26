@@ -22,7 +22,7 @@ A "zeropad" filter has been added for convenience to left pad
 hours/minutes/seconds with zeroes, for a cleaner look.
 
 ```html
-    <div chrono-timer timer-name="myTimer" start-time="{{ time }}">
+    <div chrono-timer timer-name="myTimer" start-time="time">
         {{ totalDays }} days<br />
         {{ hours }} hours<br />
         {{ minutes|zeropad }} minutes<br />

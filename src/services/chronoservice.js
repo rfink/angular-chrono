@@ -34,7 +34,10 @@ function ChronoService() {
 }
 
 ChronoService.prototype.addTimer = function addTimer(name, opts) {
-  this.timers[name] = new Timer(name, opts, this.onTick);
+  var self = this;
+  this.timers[name] = new Timer(name, opts, function(name, timer) {
+    return self.onTick(name, timer);
+  });
   return this;
 };
 
@@ -92,7 +95,14 @@ ChronoService.prototype.unsubscribe = function unsubscribe(name, fn) {
   return this;
 };
 
-ChronoService.prototype.start = function startService() {
+ChronoService.prototype.start = function startService(name) {
+  if (name) {
+    if (this.timers[name]) {
+      this.timers[name].start();
+    }
+    return;
+  }
+
   angular.forEach(this.timers, function(timer) {
     timer.start();
   });
@@ -100,7 +110,14 @@ ChronoService.prototype.start = function startService() {
   return this;
 };
 
-ChronoService.prototype.stop = function stopService() {
+ChronoService.prototype.stop = function stopService(name) {
+  if (name) {
+    if (this.timers[name]) {
+      this.timers[name].stop();
+    }
+    return;
+  }
+
   angular.forEach(this.timers, function(timer) {
     timer.stop();
   });

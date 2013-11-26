@@ -26,10 +26,10 @@ function chronoTimerDirective($log, chronoService) {
 
       var startTime = null;
 
-      if (!$attrs.startTime) {
+      if (!$scope.startTime) {
         startTime = Date.now();
       } else {
-        startTime = (new Date($attrs.startTime)).getTime();
+        startTime = (new Date($scope.startTime)).getTime();
       }
 
       if (isNaN(startTime)) {
@@ -60,7 +60,9 @@ function chronoTimerDirective($log, chronoService) {
   return {
     restrict: 'EA',
     replace: false,
-    scope: 'isolate',
+    scope: {
+      'startTime': '=startTime'
+    },
     controller: ctrlParams
   };
 

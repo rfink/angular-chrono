@@ -21,10 +21,10 @@
           return console.error(err);
         }
         var startTime = null;
-        if (!$attrs.startTime) {
+        if (!$scope.startTime) {
           startTime = Date.now();
         } else {
-          startTime = new Date($attrs.startTime).getTime();
+          startTime = new Date($scope.startTime).getTime();
         }
         if (isNaN(startTime)) {
           $log.error('Invalid start time specified');
@@ -48,7 +48,7 @@
     return {
       restrict: 'EA',
       replace: false,
-      scope: 'isolate',
+      scope: { 'startTime': '=startTime' },
       controller: ctrlParams
     };
   }
@@ -90,7 +90,10 @@
     this.listeners = {};
   }
   ChronoService.prototype.addTimer = function addTimer(name, opts) {
-    this.timers[name] = new Timer(name, opts, this.onTick);
+    var self = this;
+    this.timers[name] = new Timer(name, opts, function (name, timer) {
+      return self.onTick(name, timer);
+    });
     return this;
   };
   ChronoService.prototype.removeTimer = function removeTimer(name) {
@@ -135,13 +138,25 @@
     }
     return this;
   };
-  ChronoService.prototype.start = function startService() {
+  ChronoService.prototype.start = function startService(name) {
+    if (name) {
+      if (this.timers[name]) {
+        this.timers[name].start();
+      }
+      return;
+    }
     angular.forEach(this.timers, function (timer) {
       timer.start();
     });
     return this;
   };
-  ChronoService.prototype.stop = function stopService() {
+  ChronoService.prototype.stop = function stopService(name) {
+    if (name) {
+      if (this.timers[name]) {
+        this.timers[name].stop();
+      }
+      return;
+    }
     angular.forEach(this.timers, function (timer) {
       timer.stop();
     });
