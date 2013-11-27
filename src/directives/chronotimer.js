@@ -14,9 +14,9 @@ function chronoTimerDirective($log, chronoService) {
       $scope.totalSeconds = Math.floor(milliseconds / 1000);
       $scope.minutes = Math.floor((milliseconds / 60000) % 60);
       $scope.totalMinutes = Math.floor(milliseconds / 60000);
-      $scope.hours = Math.floor((milliseconds / 360000) % 24);
-      $scope.totalHours = Math.floor((milliseconds / 360000));
-      $scope.totalDays = Math.floor((milliseconds / 360000) / 24);
+      $scope.hours = Math.floor((milliseconds / 3600000) % 24);
+      $scope.totalHours = Math.floor((milliseconds / 3600000));
+      $scope.totalDays = Math.floor((milliseconds / 3600000) / 24);
     }
 
     function render(err, timer) {
