@@ -1,5 +1,6 @@
 {
   "esnext": true,
+  "strict": false,
   "node": true,
   "laxcomma": true,
   "laxbreak": true,

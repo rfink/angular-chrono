@@ -29,7 +29,7 @@ module.exports = function configure(grunt) {
      * We read in our `package.json` file so we can access the package name and
      * version. It's already there, so we don't repeat ourselves here.
      */
-    pkg: grunt.file.readJSON("package.json"),
+    pkg: grunt.file.readJSON('package.json'),
 
     environment: grunt.option('e') ||
       grunt.option('environment') ||
@@ -43,8 +43,8 @@ module.exports = function configure(grunt) {
      * `less` is our main stylesheet.
      */
     src: {
-      js: [ 'index.js', 'src/**/*.js', '!src/**/*.spec.js' ],
-      unit: [ 'src/**/*.spec.js' ]
+      js: [ 'index.js', 'src/**/*.js' ],
+      unit: [ 'tests/unit/**/*.test.js' ]
     },
 
     /**
@@ -178,9 +178,9 @@ module.exports = function configure(grunt) {
        * overridden in some tasks (like this file) where browser resources are
        * unaffected. It runs by default on port 35729.
        */
-      options: {
-        livereload: 35730
-      },
+      // options: {
+      //   livereload: 35730
+      // },
 
       /**
        * When the Gruntfile changes, we just want to lint it. That said, the
@@ -226,15 +226,6 @@ module.exports = function configure(grunt) {
           livereload: false
         }
       }
-    },
-
-    connect: {
-      server: {
-        options: {
-          port: 1337,
-          base: '.'
-        }
-      }
     }
   });
 
@@ -246,7 +237,11 @@ module.exports = function configure(grunt) {
    * before watching for changes.
    */
   grunt.renameTask('watch', 'delta');
-  grunt.registerTask('watch', [ 'default', 'connect', 'karma:unit', 'delta' ]);
+  grunt.registerTask('watch', [
+    'default',
+    'karma:unit',
+    'delta'
+  ]);
 
   /**
    * The default task is to build.
