@@ -2,7 +2,7 @@
   angular.module('angular-chrono', []);
   function chronoTimerDirective($compile, $log, chronoService) {
     function chronoController($scope, $element, $attrs) {
-      var html = '<div>' + $element.html() + '</div>';
+      var html = '<span>' + $element.html() + '</span>';
       $element.replaceWith($compile(html)($scope));
       var timerName = $attrs.timerName;
       if (!timerName) {
