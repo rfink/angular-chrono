@@ -3,7 +3,7 @@ function chronoTimerDirective($compile, $log, chronoService) {
 
   function chronoController($scope, $element, $attrs) {
 
-    var html = '<div>' + $element.html() + '</div>';
+    var html = '<span>' + $element.html() + '</span>';
 
     // Use our current scope
     $element.replaceWith($compile(html)($scope));
