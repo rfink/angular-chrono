@@ -1,7 +1,9 @@
 (function (window, angular, undefined) {
   angular.module('angular-chrono', []);
-  function chronoTimerDirective($log, chronoService) {
+  function chronoTimerDirective($compile, $log, chronoService) {
     function chronoController($scope, $element, $attrs) {
+      var html = '<div>' + $element.html() + '</div>';
+      $element.replaceWith($compile(html)($scope));
       var timerName = $attrs.timerName;
       if (!timerName) {
         $log.error('timer-name must be specified');
