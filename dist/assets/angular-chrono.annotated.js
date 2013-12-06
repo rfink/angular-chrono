@@ -29,7 +29,6 @@
             startTime = new Date(newScope.$eval($attrs.startTime)).getTime();
           }
           if (isNaN(startTime)) {
-            $log.error('Invalid start time specified');
             return;
           }
           newScope.milliseconds = timer.current - startTime;

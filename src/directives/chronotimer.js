@@ -37,7 +37,6 @@ function chronoTimerDirective($compile, $log, chronoService) {
         }
 
         if (isNaN(startTime)) {
-          $log.error('Invalid start time specified');
           return;
         }
 
