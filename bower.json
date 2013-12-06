@@ -9,11 +9,11 @@
     "url": "git://github.com/rfink/angular-chrono.git"
   },
   "dependencies": {
-    "angular": "1.2.2"
+    "angular": ">= 1.0.7"
   },
   "devDependencies": {
     "angular-scenario": ">= 1.0.7",
-    "angular-mocks": ">= 1.2.2"
+    "angular-mocks": ">= 1.0.7"
   },
   "main": "./dist/angular-chrono.js",
   "ignore": ["./node_modules/"]
