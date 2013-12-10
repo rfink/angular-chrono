@@ -35,7 +35,7 @@
           setTimes(newScope.milliseconds);
           newScope.$digest();
         }
-        $element.bind('$destroy', function () {
+        $scope.$on('$destroy', function () {
           chronoService.unsubscribe(timerName, render);
         });
         transclude(newScope, function (clone, innerScope) {

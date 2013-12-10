@@ -51,19 +51,13 @@ function chronoTimerDirective($compile, $log, chronoService) {
         newScope.$digest();
       }
 
-      $element.bind('$destroy', function() {
+      $scope.$on('$destroy', function() {
         chronoService.unsubscribe(timerName, render);
       });
 
       transclude(newScope, function(clone, innerScope) {
         $element.replaceWith($compile(clone)(innerScope));
       });
-
-      /*var html = $element.html().trim();
-       var compiled = $compile(html)($scope);
-
-       // Use our current scope
-       $element.replaceWith(compiled);*/
 
       chronoService.subscribe(timerName, render);
 
