@@ -1,6 +1,13 @@
 
+/**
+ * Directive for our chrono timer, display the timer with the given
+ *   settings and update on the specified interval.
+ */
 function chronoTimerDirective($compile, $log, chronoService) {
 
+  /**
+   * Compiler handler
+   */
   function chronoCompile(elem, attrs, transclude) {
 
     return function chronoLink($scope, $element, $attrs) {
@@ -13,6 +20,9 @@ function chronoTimerDirective($compile, $log, chronoService) {
         return;
       }
 
+      /**
+       * Set times on the scope
+       */
       function setTimes(milliseconds) {
         newScope.seconds = Math.floor((milliseconds / 1000) % 60);
         newScope.totalSeconds = Math.floor(milliseconds / 1000);
@@ -23,9 +33,12 @@ function chronoTimerDirective($compile, $log, chronoService) {
         newScope.totalDays = Math.floor((milliseconds / 3600000) / 24);
       }
 
+      /**
+       * Render the timer
+       */
       function render(err, timer) {
         if (err) {
-          return console.error(err);
+          return $log.error(err);
         }
 
         var startTime = null;
@@ -45,11 +58,17 @@ function chronoTimerDirective($compile, $log, chronoService) {
         newScope.$digest();
       }
 
-      $scope.$on('$destroy', function() {
+      /**
+       * Unsubscribe from the service on scope destroy
+       */
+      $scope.$on('$destroy', function onScopeDestroy() {
         chronoService.unsubscribe(timerName, render);
       });
 
-      transclude(newScope, function(clone, innerScope) {
+      /**
+       * Replace our element with the transclude-d content
+       */
+      transclude(newScope, function doReplace(clone, innerScope) {
         $element.replaceWith($compile(clone)(innerScope));
       });
 
@@ -70,4 +89,4 @@ function chronoTimerDirective($compile, $log, chronoService) {
 }
 
 angular.module('angular-chrono')
-       .directive('chronoTimer', chronoTimerDirective);
+  .directive('chronoTimer', chronoTimerDirective);

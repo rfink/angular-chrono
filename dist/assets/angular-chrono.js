@@ -5,8 +5,15 @@
 angular.module('angular-chrono', []);
 
 
+/**
+ * Directive for our chrono timer, display the timer with the given
+ *   settings and update on the specified interval.
+ */
 function chronoTimerDirective($compile, $log, chronoService) {
 
+  /**
+   * Compiler handler
+   */
   function chronoCompile(elem, attrs, transclude) {
 
     return function chronoLink($scope, $element, $attrs) {
@@ -19,6 +26,9 @@ function chronoTimerDirective($compile, $log, chronoService) {
         return;
       }
 
+      /**
+       * Set times on the scope
+       */
       function setTimes(milliseconds) {
         newScope.seconds = Math.floor((milliseconds / 1000) % 60);
         newScope.totalSeconds = Math.floor(milliseconds / 1000);
@@ -29,9 +39,12 @@ function chronoTimerDirective($compile, $log, chronoService) {
         newScope.totalDays = Math.floor((milliseconds / 3600000) / 24);
       }
 
+      /**
+       * Render the timer
+       */
       function render(err, timer) {
         if (err) {
-          return console.error(err);
+          return $log.error(err);
         }
 
         var startTime = null;
@@ -51,11 +64,17 @@ function chronoTimerDirective($compile, $log, chronoService) {
         newScope.$digest();
       }
 
-      $scope.$on('$destroy', function() {
+      /**
+       * Unsubscribe from the service on scope destroy
+       */
+      $scope.$on('$destroy', function onScopeDestroy() {
         chronoService.unsubscribe(timerName, render);
       });
 
-      transclude(newScope, function(clone, innerScope) {
+      /**
+       * Replace our element with the transclude-d content
+       */
+      transclude(newScope, function doReplace(clone, innerScope) {
         $element.replaceWith($compile(clone)(innerScope));
       });
 
@@ -76,13 +95,12 @@ function chronoTimerDirective($compile, $log, chronoService) {
 }
 
 angular.module('angular-chrono')
-       .directive('chronoTimer', chronoTimerDirective);
+  .directive('chronoTimer', chronoTimerDirective);
 
 
 /**
  * Zero-pad our time display
  */
-
 function zeroPadFilter(input) {
   if (input !== 0 && !input) {
     return;
@@ -91,12 +109,15 @@ function zeroPadFilter(input) {
   return new Array(2 - input.length + 1).join('0') + input;
 }
 
+/**
+ * Simple wrapper to return a function
+ */
 function wrapper() {
   return zeroPadFilter;
 }
 
 angular.module('angular-chrono')
-       .filter('zeropad', wrapper);
+  .filter('zeropad', wrapper);
 
 /**
  * Object representing an individual timer.
@@ -104,10 +125,6 @@ angular.module('angular-chrono')
  * Currently the only option is interval. This represents
  * the time interval of each tick of the timer in ms. Default
  * is 1000ms.
- *
- * @param {String} name
- * @param {Object} opts
- * @param {[type]} listener
  */
 function Timer(name, opts, listener) {
   this.timerId = null;
@@ -119,14 +136,12 @@ function Timer(name, opts, listener) {
 
 /**
  * Start a timer ticking.
- *
- * @return {Object} The timer we just started.
  */
 Timer.prototype.start = function timerStart() {
   var self = this;
   var drift = (Date.now() - this.started) % 1000;
 
-  this.timerId = setTimeout(function () {
+  this.timerId = setTimeout(function init() {
     self.listener(self.name, self);
     self.start();
   }, this.opts.interval - drift);
@@ -134,6 +149,9 @@ Timer.prototype.start = function timerStart() {
   return this;
 };
 
+/**
+ * Stop a timer ticking.
+ */
 Timer.prototype.stop = function timerStop() {
   clearTimeout(this.timerId);
   this.timerId = null;
@@ -151,17 +169,18 @@ function ChronoService() {
 
 /**
  * Add a timer to our service.
- * @param {String} name
- * @param {Object} opts Options passed to the timer object.
  */
 ChronoService.prototype.addTimer = function addTimer(name, opts) {
   var self = this;
-  this.timers[name] = new Timer(name, opts, function (name, timer) {
+  this.timers[name] = new Timer(name, opts, function listener(name, timer) {
     return self.onTick(name, timer);
   });
   return this;
 };
 
+/**
+ * Remove timer from our service (by name).
+ */
 ChronoService.prototype.removeTimer = function removeTimer(name) {
   if (!this.timers[name]) {
     return this;
@@ -173,13 +192,20 @@ ChronoService.prototype.removeTimer = function removeTimer(name) {
   return this;
 };
 
+/**
+ * When the timer ticks, this method will be called with the timer
+ *   name and the timer object.
+ */
 ChronoService.prototype.onTick = function onTick(name, timer) {
   timer.current = Date.now();
-  angular.forEach(this.listeners[name], function (listener) {
+  angular.forEach(this.listeners[name], function eachListener(listener) {
     listener(null, timer);
   });
 };
 
+/**
+ * Subscribe to the service with the given timer name and callback.
+ */
 ChronoService.prototype.subscribe = function subscribe(name, fn) {
   if (typeof fn !== 'function') {
     fn = function noop() {};
@@ -196,6 +222,9 @@ ChronoService.prototype.subscribe = function subscribe(name, fn) {
   return this;
 };
 
+/**
+ * Unsubscribe by name/method.
+ */
 ChronoService.prototype.unsubscribe = function unsubscribe(name, fn) {
   if (!this.listeners[name]) {
     return this;
@@ -203,7 +232,7 @@ ChronoService.prototype.unsubscribe = function unsubscribe(name, fn) {
 
   var idx = -1;
 
-  angular.forEach(this.listeners[name], function (listener, key) {
+  angular.forEach(this.listeners[name], function eachListener(listener, key) {
     if (listener === fn) {
       idx = key;
     }
@@ -216,6 +245,10 @@ ChronoService.prototype.unsubscribe = function unsubscribe(name, fn) {
   return this;
 };
 
+/**
+ * Start the service, if name is passed, only start that timer, otherwise
+ *   start all the timers.
+ */
 ChronoService.prototype.start = function startService(name) {
   if (name) {
     if (this.timers[name]) {
@@ -224,13 +257,17 @@ ChronoService.prototype.start = function startService(name) {
     return;
   }
 
-  angular.forEach(this.timers, function (timer) {
+  angular.forEach(this.timers, function eachTimer(timer) {
     timer.start();
   });
 
   return this;
 };
 
+/**
+ * Stop the service, if name is passed, only stop that timer, otherwise
+ *   stop all the timers.
+ */
 ChronoService.prototype.stop = function stopService(name) {
   if (name) {
     if (this.timers[name]) {
@@ -239,14 +276,25 @@ ChronoService.prototype.stop = function stopService(name) {
     return;
   }
 
-  angular.forEach(this.timers, function (timer) {
+  angular.forEach(this.timers, function eachTimer(timer) {
     timer.stop();
   });
 
   return this;
 };
 
+/**
+ * Clear all timers and subscribers from the service (cleanup)
+ */
+ChronoService.prototype.clear = function clearService() {
+  angular.forEach(this.timers, function eachTimer(timer) {
+    timer.stop();
+  });
+  this.timers = {};
+  this.listeners = {};
+};
+
 angular.module('angular-chrono')
-       .service('chronoService', [ChronoService]);
+  .service('chronoService', [ChronoService]);
 
 }(window, angular));

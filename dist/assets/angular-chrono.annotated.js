@@ -20,7 +20,7 @@
         }
         function render(err, timer) {
           if (err) {
-            return console.error(err);
+            return $log.error(err);
           }
           var startTime = null;
           if (!$attrs.startTime) {
@@ -35,10 +35,10 @@
           setTimes(newScope.milliseconds);
           newScope.$digest();
         }
-        $scope.$on('$destroy', function () {
+        $scope.$on('$destroy', function onScopeDestroy() {
           chronoService.unsubscribe(timerName, render);
         });
-        transclude(newScope, function (clone, innerScope) {
+        transclude(newScope, function doReplace(clone, innerScope) {
           $element.replaceWith($compile(clone)(innerScope));
         });
         chronoService.subscribe(timerName, render);
@@ -74,7 +74,7 @@
   Timer.prototype.start = function timerStart() {
     var self = this;
     var drift = (Date.now() - this.started) % 1000;
-    this.timerId = setTimeout(function () {
+    this.timerId = setTimeout(function init() {
       self.listener(self.name, self);
       self.start();
     }, this.opts.interval - drift);
@@ -91,7 +91,7 @@
   }
   ChronoService.prototype.addTimer = function addTimer(name, opts) {
     var self = this;
-    this.timers[name] = new Timer(name, opts, function (name, timer) {
+    this.timers[name] = new Timer(name, opts, function listener(name, timer) {
       return self.onTick(name, timer);
     });
     return this;
@@ -106,7 +106,7 @@
   };
   ChronoService.prototype.onTick = function onTick(name, timer) {
     timer.current = Date.now();
-    angular.forEach(this.listeners[name], function (listener) {
+    angular.forEach(this.listeners[name], function eachListener(listener) {
       listener(null, timer);
     });
   };
@@ -128,7 +128,7 @@
       return this;
     }
     var idx = -1;
-    angular.forEach(this.listeners[name], function (listener, key) {
+    angular.forEach(this.listeners[name], function eachListener(listener, key) {
       if (listener === fn) {
         idx = key;
       }
@@ -145,7 +145,7 @@
       }
       return;
     }
-    angular.forEach(this.timers, function (timer) {
+    angular.forEach(this.timers, function eachTimer(timer) {
       timer.start();
     });
     return this;
@@ -157,10 +157,17 @@
       }
       return;
     }
-    angular.forEach(this.timers, function (timer) {
+    angular.forEach(this.timers, function eachTimer(timer) {
       timer.stop();
     });
     return this;
+  };
+  ChronoService.prototype.clear = function clearService() {
+    angular.forEach(this.timers, function eachTimer(timer) {
+      timer.stop();
+    });
+    this.timers = {};
+    this.listeners = {};
   };
   angular.module('angular-chrono').service('chronoService', [ChronoService]);
 }(window, angular));
