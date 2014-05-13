@@ -31,7 +31,7 @@
           if (isNaN(startTime)) {
             return;
           }
-          newScope.milliseconds = timer.current - startTime;
+          newScope.milliseconds = Math.abs(timer.current - startTime);
           setTimes(newScope.milliseconds);
           newScope.$digest();
         }

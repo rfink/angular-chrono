@@ -59,7 +59,7 @@ function chronoTimerDirective($compile, $log, chronoService) {
           return;
         }
 
-        newScope.milliseconds = timer.current - startTime;
+        newScope.milliseconds = Math.abs(timer.current - startTime);
         setTimes(newScope.milliseconds);
         newScope.$digest();
       }
