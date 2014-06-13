@@ -9,7 +9,11 @@ the same timer.
 Usage
 ==============
 
-TODO: Bower install
+To install in your app, simply run:
+
+```
+    bower install angular-chrono
+```
 
 To use in your angular app, add "angular-chrono" to your dependencies:
 
