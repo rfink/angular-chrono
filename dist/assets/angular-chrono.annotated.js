@@ -52,7 +52,12 @@
       compile: chronoCompile
     };
   }
-  angular.module('angular-chrono').directive('chronoTimer', chronoTimerDirective);
+  angular.module('angular-chrono').directive('chronoTimer', [
+    '$compile',
+    '$log',
+    'chronoService',
+    chronoTimerDirective
+  ]);
   function zeroPadFilter(input) {
     if (input !== 0 && !input) {
       return;

@@ -89,4 +89,9 @@ function chronoTimerDirective($compile, $log, chronoService) {
 }
 
 angular.module('angular-chrono')
-  .directive('chronoTimer', chronoTimerDirective);
+  .directive('chronoTimer', [
+    '$compile',
+    '$log',
+    'chronoService',
+    chronoTimerDirective
+  ]);
