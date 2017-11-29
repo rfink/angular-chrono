@@ -53,8 +53,9 @@ The available scope vars inside the directive are as follows:
 + totalHours: total number of hours passed
 + totalDays: total number of days passed
 
-Interval is the only current option passed into the second param object
-for addTimer.  It defaults to 1000 milliseconds, or one second.
+The options passed into the second param object for addTimer are:
++ interval: default is 1000 milliseconds
++ resetOnStop: reset counter to zero when it stops
 
 See examples/index.html for an example usage.  Other examples
 may be included as necessary.
