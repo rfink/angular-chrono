@@ -56,6 +56,16 @@ function chronoTimerDirective($compile, $log, chronoService) {
         }
 
         if (isNaN(startTime)) {
+          if (timer.opts.resetOnStop) {
+            newScope.seconds = 0;
+            newScope.totalSeconds = 0;
+            newScope.minutes = 0;
+            newScope.totalMinutes = 0;
+            newScope.hours = 0;
+            newScope.totalHours = 0;
+            newScope.totalDays = 0;
+            newScope.$digest();
+          }
           return;
         }
 
@@ -134,7 +144,10 @@ angular.module('angular-chrono')
 function Timer(name, opts, listener) {
   this.timerId = null;
   this.name = name;
-  this.opts = opts || { interval: 1000 };
+  this.opts = {
+    interval: opts.interval || 1000,
+    resetOnStop: opts.resetOnStop || false
+  };
   this.listener = listener;
   this.current = this.started = Date.now();
 }
